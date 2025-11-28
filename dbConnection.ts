@@ -60,6 +60,63 @@ export async function getIdUsers(idParam: number) {
 	return res
 }
 
+export async function IssueInvoice(billableItem: number, currency: number, reference: string, payerId: number){
+	const res = await execute(`
+		INSERT INTO invoices(billableItem, currency, reference, payerId)
+		VALUES(?, ?, ?, ?)	
+	`, [billableItem, currency, reference, payerId])
+}
+
+export async function getCurrentDayInvoices(page: number){
+	const res = await query(`
+		SELECT 
+			i.id,
+			i.billableItem,
+			i.currency,
+			i.reference,
+			i.payerId,
+			i.date,
+			p.name,
+		FROM invoices i JOIN payer p ON	i.payerId = p.id
+		ORDER BY i.date DESC
+		LIMIT 10 OFFSET ?
+	`, [(page - 1) * 10])
+	return res
+}
+
+export async function getInvoicesByPayer(page: number, identification: number){
+	const res = await query(`
+		SELECT 
+			i.id,
+			i.billableItem,
+			i.currency,
+			i.reference,
+			i.payerId,
+			i.date,
+			p.name,
+		FROM invoices i JOIN payer p ON	i.payerId = p.id
+		WHERE i.payerId = ?
+		ORDER BY i.date DESC
+		LIMIT 10 OFFSET ?	
+	`, [identification, ((page-1)*10)])
+	return res
+}
+
+export async function setSettings(){
+
+}
+
+export async function getSettings(){
+	const res = await query(`
+		SELECT * from settings
+		WHERE 
+			label = 'currencyRate' 
+			OR label = 'datePrice'
+			OR label = 'historyPrice'	
+	`)
+	return res
+}
+
 export async function getLogs(page: number) {
 	const res = await query(`
 		SELECT
