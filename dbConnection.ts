@@ -45,6 +45,11 @@ export async function login(data: t.loginData){
 	const res = await query('SELECT * FROM users WHERE id = ?', [id])
 	return res
 }
+//Obtener el ID de la siguiente factura a emitir (probar si este enfoque funciona correctamente)
+export async function getIdInvoice(){
+	const res = await query('SELECT AUTO_INCREMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?', [Deno.env.get("BDD_DATABASE"), 'invoices'])
+	return res
+}
 
 export async function verifyPayer(searchParam: string, page: number){	
 	const res = await query(`
@@ -55,7 +60,7 @@ export async function verifyPayer(searchParam: string, page: number){
 	return res	
 }
 
-export async function getIdUsers(idParam: number) {
+export async function getSearchedPayer(idParam: number) {
 	const res = await query('SELECT * FROM users WHERE id = ?', [idParam])
 	return res
 }

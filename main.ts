@@ -24,7 +24,7 @@ app.post('/api/login', async (req, res) => {
 			res.status(401).send('Contraseña Incorrecta')
 		}else if(dbResponse[0].active == false){
 			res.status(404).send('Este usuario se encuentra inactivo')
-		}else if(dbResponse[0].type != 5){
+		}else if(dbResponse[0].type != 5 && dbResponse[0].type != 6){
 			res.status(401).send('Usted no es personal administrativo')
 		}else{
 			const token = jwt.sign({
@@ -41,6 +41,28 @@ app.post('/api/login', async (req, res) => {
 	}
 })
 
+//Obtener el numero de Factura a emitir
+app.get('/api/getIdInvoice', tokenVerification.forSysAdmins, async (req, res) => {
+	try{
+		const dbResponse = await db.getIdInvoice()
+		res.status(200).send(dbResponse)
+	}catch(err){
+		console.log(err)
+		res.status(500).send('error del servidor')
+	}
+})
+//Modificar para verificar si un pagador ya existe
+app.get('/api/getSearchedPayer/:idParam', tokenVerification.forSysAdmins, async (req, res) => {
+	const idParam = req.params.idParam
+	try {
+		const dbResponse = await db.getSearchedPayer(idParam)
+		res.status(200).send(dbResponse)
+	} catch (err) {
+		console.log(err)
+		res.status(404).send('Usuario no encontrado')
+	}
+})
+
 //Modificar para obtener citas por cedula de pagador
 app.get('/api/verifyPayer/:searchParam/:page', tokenVerification.forSysAdmins, async (req, res) => {
 	const searchParam = req.params.searchParam
@@ -54,17 +76,7 @@ app.get('/api/verifyPayer/:searchParam/:page', tokenVerification.forSysAdmins, a
 	}
 })
 
-//Modificar para verificar si un pagador ya existe
-app.get('/api/getIdUsers/:idParam', tokenVerification.forSysAdmins, async (req, res) => {
-	const idParam = req.params.idParam
-	try {
-		const dbResponse = await db.getIdUsers(idParam)
-		res.status(200).send(dbResponse)
-	} catch (err) {
-		console.log(err)
-		res.status(404).send('Usuario no encontrado')
-	}
-})
+
 
 //Modificar para obtener el historial competo de facturacion
 app.get('/api/getAllChangeLogs/:page', tokenVerification.forSysAdmins, async (req, res) => {
