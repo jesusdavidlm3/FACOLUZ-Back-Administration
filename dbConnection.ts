@@ -65,7 +65,7 @@ export async function getSearchedPayer(idParam: number) {
 	return res
 }
 
-export async function IssueInvoice(billableItem: number, currency: number, reference: string, payerId: number){
+export async function issueInvoice(billableItem: number, currency: number, reference: string, payerId: number){
 	const res = await execute(`
 		INSERT INTO invoices(billableItem, currency, reference, payerId)
 		VALUES(?, ?, ?, ?)	

@@ -51,6 +51,19 @@ app.get('/api/getIdInvoice', tokenVerification.forSysAdmins, async (req, res) =>
 		res.status(500).send('error del servidor')
 	}
 })
+
+app.post('/api/issueInvoice', tokenVerification.forSysAdmins, async (req, res) => {
+	const token = req.headers.authorization.split(" ")[1]
+	const payload = jwt.verify(token, secret)
+	try {
+		const dbResponse = await db.issueInvoice(req.body, payload.id)
+		res.status(200).send("Factura creada exitosamente")
+	} catch (err) {
+		console.log(err)
+		res.status(500).send('Error del servidor')
+	}
+})
+
 //Modificar para verificar si un pagador ya existe
 app.get('/api/getSearchedPayer/:idParam', tokenVerification.forSysAdmins, async (req, res) => {
 	const idParam = req.params.idParam
