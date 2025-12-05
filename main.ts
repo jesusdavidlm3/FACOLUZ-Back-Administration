@@ -33,6 +33,7 @@ app.post('/api/login', async (req, res) => {
 				type: dbResponse[0].type,
 				exp: Date.now() + 600000
 			}, secret)
+			console.log({...dbResponse[0], jwt: token})
 			res.status(200).send({...dbResponse[0], jwt: token})
 		}
 	}catch(err){
@@ -57,6 +58,7 @@ app.post('/api/issueInvoice', tokenVerification.forSysAdmins, async (req, res) =
 	const payload = jwt.verify(token, secret)
 	try {
 		const dbResponse = await db.issueInvoice(req.body, payload.id)
+		console.log(dbResponse)
 		res.status(200).send("Factura creada exitosamente")
 	} catch (err) {
 		console.log(err)
@@ -65,14 +67,14 @@ app.post('/api/issueInvoice', tokenVerification.forSysAdmins, async (req, res) =
 })
 
 //Modificar para verificar si un pagador ya existe
-app.get('/api/getSearchedPayer/:idParam', tokenVerification.forSysAdmins, async (req, res) => {
+app.get('/api/getSearchedPatient/:idParam', tokenVerification.forSysAdmins, async (req, res) => {
 	const idParam = req.params.idParam
 	try {
-		const dbResponse = await db.getSearchedPayer(idParam)
+		const dbResponse = await db.getSearchedPatient(idParam)
 		res.status(200).send(dbResponse)
 	} catch (err) {
 		console.log(err)
-		res.status(404).send('Usuario no encontrado')
+		res.status(404).send('Paciente no encontrado')
 	}
 })
 

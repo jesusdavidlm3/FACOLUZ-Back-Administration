@@ -60,16 +60,18 @@ export async function verifyPayer(searchParam: string, page: number){
 	return res	
 }
 
-export async function getSearchedPayer(idParam: number) {
-	const res = await query('SELECT * FROM users WHERE id = ?', [idParam])
+export async function getSearchedPatient(idParam: number) {
+	const res = await query('SELECT * FROM payer WHERE id = ?', [idParam])
 	return res
 }
 
-export async function issueInvoice(billableItem: number, currency: number, reference: string, payerId: number){
+export async function issueInvoice(data: t.invoiceData, issuerId: number){
+	const {billableItem, currency, amout, reference, payerId} = data
 	const res = await execute(`
-		INSERT INTO invoices(billableItem, currency, reference, payerId)
-		VALUES(?, ?, ?, ?)	
-	`, [billableItem, currency, reference, payerId])
+		INSERT INTO invoices(billableItem, currency, amout, reference, payerId)
+		VALUES(?, ?, ?, ?, ?)	
+	`, [billableItem, currency, amout, reference, payerId])
+	return res
 }
 
 export async function getCurrentDayInvoices(page: number){

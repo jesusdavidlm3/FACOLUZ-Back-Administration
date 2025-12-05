@@ -3,13 +3,12 @@ export interface loginData{
     passwordHash: string
 }
 
-export interface newUser{
-    idType: number,
-    id: number,
-    name: string,
-    lastname: string,
-    password: string,
-    userType: 0 | 1 | 2 | 3
+export interface invoiceData{
+    billableItem: number,
+    currency: number,
+    amout: string, 
+    reference: string, 
+    payerId: number
 }
 
 export interface userData extends newUser{
