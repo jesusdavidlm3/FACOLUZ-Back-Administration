@@ -43,7 +43,7 @@ app.post('/api/login', async (req, res) => {
 })
 
 //Obtener el numero de Factura a emitir
-app.get('/api/getIdInvoice', tokenVerification.forSysAdmins, async (req, res) => {
+app.get('/api/getIdInvoice', tokenVerification.forAdmins, async (req, res) => {
 	try{
 		const dbResponse = await db.getIdInvoice()
 		res.status(200).send(dbResponse)
@@ -53,11 +53,11 @@ app.get('/api/getIdInvoice', tokenVerification.forSysAdmins, async (req, res) =>
 	}
 })
 
-app.post('/api/issueInvoice', tokenVerification.forSysAdmins, async (req, res) => {
+app.post('/api/issueInvoice', tokenVerification.forAdmins, async (req, res) => {
 	const token = req.headers.authorization.split(" ")[1]
 	const payload = jwt.verify(token, secret)
 	try {
-		const dbResponse = await db.issueInvoice(req.body, payload.id)
+		const dbResponse = await db.issueInvoice(req.body)
 		console.log(dbResponse)
 		res.status(200).send("Factura creada exitosamente")
 	} catch (err) {

@@ -40,8 +40,9 @@ export function forSysAdmins(req, res, next){
 			res.status(401).send('Sesion expirada')
 		}else if(payload.type != 0){
 			res.status(401).send('Usted no es un administrador de sistemas')
+		}else{
+			next()
 		}
-		next()
 	}catch(err){
 		return res.status(401).send('Token no válido');
 	}
@@ -57,6 +58,22 @@ export function forStudyControl(req, res, next){
 			res.status(401).send('Usted no es un trabajador de control de estudios')
 		}
 		next()
+	}catch(err){
+		return res.status(401).send('Token no válido');
+	}
+}
+
+export function forAdmins(req, res, next){
+	try{
+		const token = req.headers.authorization.split(" ")[1]
+		const payload = jwt.verify(token, secret)
+		if(Date().now > payload.exp){
+			res.status(401).send('Sesion expirada')
+		}else if(payload.type != 5){
+			res.status(401).send('Usted no es un administrador de sistemas')
+		}else{
+			next()
+		}
 	}catch(err){
 		return res.status(401).send('Token no válido');
 	}

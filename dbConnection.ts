@@ -65,12 +65,12 @@ export async function getSearchedPatient(idParam: number) {
 	return res
 }
 
-export async function issueInvoice(data: t.invoiceData, issuerId: number){
-	const {billableItem, currency, amout, reference, payerId} = data
+export async function issueInvoice(data: t.invoiceData){
+	const {billableItem, currency, amount, reference, changeRate, patientId, patientName, patientPhone} = data
 	const res = await execute(`
-		INSERT INTO invoices(billableItem, currency, amout, reference, payerId)
-		VALUES(?, ?, ?, ?, ?)	
-	`, [billableItem, currency, amout, reference, payerId])
+		INSERT INTO invoices(billableitem, currency, amount, reference, changeRate, patientId, patientName, patientPhone)
+		VALUES(?, ?, ?, ?, ?, ?, ?, ?)	
+	`, [billableItem, currency, amount, reference, changeRate, patientId, patientName, patientPhone ])
 	return res
 }
 
