@@ -55,6 +55,7 @@ export async function getInvoicesById(patientId: string, page: number){
 	const res = await query(`
 		SELECT * FROM invoices
 		WHERE patientId = ?
+		ORDER BY date DESC
 		LIMIT 10 OFFSET ?
 	`, [ patientId, (page-1)*10])
 	return res	
@@ -63,6 +64,7 @@ export async function getInvoicesById(patientId: string, page: number){
 export async function getAllinvoices(page: number){	
 	const res = await query(`
 		SELECT * FROM invoices
+		ORDER BY date DESC
 		LIMIT 10 OFFSET ?
 	`, [(page-1)*10])
 	return res	
