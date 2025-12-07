@@ -51,12 +51,20 @@ export async function getIdInvoice(){
 	return res
 }
 
-export async function verifyPayer(searchParam: string, page: number){	
+export async function getInvoicesById(patientId: string, page: number){	
 	const res = await query(`
-		SELECT * FROM users
-		WHERE id = ?
+		SELECT * FROM invoices
+		WHERE patientId = ?
 		LIMIT 10 OFFSET ?
-	`, [ searchParam, (page-1)*10])
+	`, [ patientId, (page-1)*10])
+	return res	
+}
+
+export async function getAllinvoices(page: number){	
+	const res = await query(`
+		SELECT * FROM invoices
+		LIMIT 10 OFFSET ?
+	`, [(page-1)*10])
 	return res	
 }
 

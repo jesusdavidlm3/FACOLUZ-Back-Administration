@@ -79,11 +79,11 @@ app.get('/api/getSearchedPatient/:idParam', tokenVerification.forSysAdmins, asyn
 })
 
 //Modificar para obtener citas por cedula de pagador
-app.get('/api/verifyPayer/:searchParam/:page', tokenVerification.forSysAdmins, async (req, res) => {
-	const searchParam = req.params.searchParam
+app.get('/api/getInvoices/:patientId/:page', tokenVerification.forAdmins, async (req, res) => {
+	const patientId = req.params.patientId
 	const page = Number(req.params.page)
 	try{
-		const dbResponse = await db.verifyPayer(searchParam, page)
+		const dbResponse = await db.getInvoicesById(patientId, page)
 		res.status(200).send(dbResponse)
 	}catch(err){
 		console.log(err)
@@ -91,7 +91,16 @@ app.get('/api/verifyPayer/:searchParam/:page', tokenVerification.forSysAdmins, a
 	}
 })
 
-
+app.get('/api/getInvoices/:page', tokenVerification.forAdmins, async (req, res) => {
+	const page = Number(req.params.page)
+	try{
+		const dbResponse = await db.getAllinvoices(page)
+		res.status(200).send(dbResponse)
+	}catch(err){
+		console.log(err)
+		res.status(404).send('Usuario no encontrado')
+	}
+})
 
 //Modificar para obtener el historial competo de facturacion
 app.get('/api/getAllChangeLogs/:page', tokenVerification.forSysAdmins, async (req, res) => {
