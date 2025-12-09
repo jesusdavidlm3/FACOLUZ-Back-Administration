@@ -39,7 +39,7 @@ async function execute(query: string, params?: object) {
 		connection?.release()
 	}
 }
-
+//Inicio de sesion
 export async function login(data: t.loginData){
 	const id = data.id
 	const res = await query('SELECT * FROM users WHERE id = ?', [id])
@@ -50,7 +50,7 @@ export async function getIdInvoice(){
 	const res = await query('SELECT AUTO_INCREMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?', [Deno.env.get("BDD_DATABASE"), 'invoices'])
 	return res
 }
-
+//Obtener facturas por ID de paciente
 export async function getInvoicesById(patientId: string, page: number){	
 	const res = await query(`
 		SELECT * FROM invoices
@@ -60,7 +60,7 @@ export async function getInvoicesById(patientId: string, page: number){
 	`, [ patientId, (page-1)*10])
 	return res	
 }
-
+//Obtener todas las facturas 
 export async function getAllinvoices(page: number){	
 	const res = await query(`
 		SELECT * FROM invoices
@@ -69,6 +69,35 @@ export async function getAllinvoices(page: number){
 	`, [(page-1)*10])
 	return res	
 }
+//Obtener facturas por verificar
+export async function getinvoicesVerification(page: number){	
+	const res = await query(`
+		SELECT * FROM invoices WHERE status = 'Por verificar'
+		ORDER BY date DESC
+		LIMIT 10 OFFSET ?
+	`, [(page-1)*10])
+	return res	
+}
+//Obtener facturas por verificar y por ID de paciente
+export async function getinvoicesVerificationById(patientId: string, page: number){	
+	const res = await query(`
+		SELECT * FROM invoices
+		WHERE patientId = ? AND status = 'Por verificar'
+		ORDER BY date DESC
+		LIMIT 10 OFFSET ?
+	`, [ patientId, (page-1)*10])
+	return res	
+}
+//Verificar estado de la factura
+export async function verifyInvoice(idParam: number, status: string,){
+	const res = await execute(`
+		UPDATE invoices 
+		SET status = ?
+		WHERE id = ?	
+	`, [status, idParam])
+	return res
+}
+
 
 export async function getSearchedPatient(idParam: number) {
 	const res = await query('SELECT * FROM payer WHERE id = ?', [idParam])

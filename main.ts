@@ -77,6 +77,40 @@ app.get('/api/getSearchedPatient/:idParam', tokenVerification.forSysAdmins, asyn
 		res.status(404).send('Paciente no encontrado')
 	}
 })
+//Obtener facturas por verificar
+app.get('/api/getinvoicesVerification/:page', tokenVerification.forAdmins, async (req, res) => {
+	const page = Number(req.params.page)
+	try{
+		const dbResponse = await db.getinvoicesVerification(page)
+		res.status(200).send(dbResponse)
+	}catch(err){
+		console.log(err)
+		res.status(404).send('Error del servidor, No pudo traer facturas por verificar')
+	}
+})
+//Obtener facturas por verificar y por ID de paciente
+app.get('/api/getInvoicesVerificationById/:patientId/:page', tokenVerification.forAdmins, async (req, res) => {
+	const patientId = req.params.patientId
+	const page = Number(req.params.page)
+	try{
+		const dbResponse = await db.getinvoicesVerificationById(patientId, page)
+		res.status(200).send(dbResponse)
+	}catch(err){
+		console.log(err)
+		res.status(404).send('Error del servidor, No pudo traer facturas deacuerdo al ID proporcionado')
+	}
+})
+//Verificar factura
+app.post('/api/verifyInvoice', tokenVerification.forAdmins, async (req, res) => {
+	const {idParam, status} = req.body
+	try{
+		const dbResponse = await db.verifyInvoice(idParam, status)
+		res.status(200).send('La factura ha sido verificada con exitosamente')
+	}catch(err){
+		console.log(err)
+		res.status(500).send('Error del servidor, No pudo actualizar el estado de la factura')
+	}
+})
 
 //Modificar para obtener citas por cedula de pagador
 app.get('/api/getInvoices/:patientId/:page', tokenVerification.forAdmins, async (req, res) => {
