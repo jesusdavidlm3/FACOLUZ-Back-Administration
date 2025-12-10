@@ -106,11 +106,19 @@ export async function getSearchedPatient(idParam: number) {
 
 export async function issueInvoice(data: t.invoiceData){
 	const {billableItem, currency, amount, reference, changeRate, patientId, patientName, patientPhone} = data
-	const res = await execute(`
-		INSERT INTO invoices(billableitem, currency, amount, reference, changeRate, patientId, patientName, patientPhone)
-		VALUES(?, ?, ?, ?, ?, ?, ?, ?)	
-	`, [billableItem, currency, amount, reference, changeRate, patientId, patientName, patientPhone ])
-	return res
+	if (currency !== 2){
+		const res = await execute(`
+			INSERT INTO invoices(billableitem, currency, amount, reference, changeRate, patientId, patientName, patientPhone,status)
+			VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)	
+		`, [billableItem, currency, amount, reference, changeRate, patientId, patientName, patientPhone, 'Recibida'])
+		return res
+	}else{
+		const res = await execute(`
+			INSERT INTO invoices(billableitem, currency, amount, reference, changeRate, patientId, patientName, patientPhone)
+			VALUES(?, ?, ?, ?, ?, ?, ?, ?)	
+		`, [billableItem, currency, amount, reference, changeRate, patientId, patientName, patientPhone ])
+		return res
+	}
 }
 
 export async function getCurrentDayInvoices(page: number){
