@@ -4,6 +4,7 @@ import jwt from 'npm:jsonwebtoken'
 import * as db from './dbConnection.ts'
 import * as tokenVerification from './tokenVerification.ts'
 import "jsr:@std/dotenv/load";
+import { BuildReport } from "./PdfModels/DailyReport.ts";
 
 const port = Deno.env.get("PORT")
 const secret = Deno.env.get("SECRET")
@@ -136,15 +137,21 @@ app.get('/api/getInvoices/:page', tokenVerification.forAdmins, async (req, res) 
 	}
 })
 
-//Modificar para obtener el historial competo de facturacion
-app.get('/api/getAllChangeLogs/:page', tokenVerification.forSysAdmins, async (req, res) => {
+app.get('/api/getDailyReport', async (req, res) => {
 	try{
-		const page: number = Number(req.params.page)
-		const dbResponse = await db.getLogs(page)
-		res.status(200).send(dbResponse)
+
+		const stream = res.writeHead(200, {
+			"Content-Type": "aplication/pdf",
+			"Content-Disposition": "attachment; filename=Reporte.pdf"
+		})
+
+		BuildReport(
+			(data) => stream.write(data),
+			() => stream.end()
+		)
 	}catch(err){
 		console.log(err)
-		res.status(500).send('error del servidor')
+		res.status(500).send(err)
 	}
 })
 
