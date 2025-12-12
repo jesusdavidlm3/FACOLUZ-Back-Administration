@@ -188,3 +188,11 @@ export async function getLogs(page: number) {
 	`, [(page-1)*10])
 	return res
 }
+
+export async function getDailyReportInfo(start: Date, end: Date){
+	const res = await query(`
+		SELECT * FROM invoices
+		WHERE date > ? AND date < ?
+	`, [start, end])
+	return res
+}

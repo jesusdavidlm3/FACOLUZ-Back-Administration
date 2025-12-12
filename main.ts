@@ -140,14 +140,24 @@ app.get('/api/getInvoices/:page', tokenVerification.forAdmins, async (req, res) 
 app.get('/api/getDailyReport', async (req, res) => {
 	try{
 
+		const currentDate = new Date
+		const roofLimit = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 1)
+		const floorLimit = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate())
+
 		const stream = res.writeHead(200, {
 			"Content-Type": "aplication/pdf",
-			"Content-Disposition": "attachment; filename=Reporte.pdf"
+			"Content-Disposition": `attachment; filename=Reporte del ${floorLimit.toDateString()}.pdf`
 		})
+
+		const dbResponse = await db.getDailyReportInfo(floorLimit, roofLimit)
+		console.log(dbResponse)
+
+		res.status(200)
 
 		BuildReport(
 			(data) => stream.write(data),
-			() => stream.end()
+			() => stream.end(),
+			dbResponse
 		)
 	}catch(err){
 		console.log(err)
