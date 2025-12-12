@@ -164,9 +164,7 @@ export async function getSettings(){
 	const res = await query(`
 		SELECT * from settings
 		WHERE 
-			label = 'currencyRate' 
-			OR label = 'datePrice'
-			OR label = 'historyPrice'	
+			label != 'startedPeriod' 
 	`)
 	return res
 }
