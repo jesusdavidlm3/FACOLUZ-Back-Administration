@@ -1,0 +1,6 @@
+FROM mariadb:latest
+
+WORKDIR /
+
+# At this path the sql scripts are executed automatically
+COPY ./dbscript.sql /docker-entrypoint-initdb.d
