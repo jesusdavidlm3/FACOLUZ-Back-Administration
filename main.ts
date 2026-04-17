@@ -165,7 +165,7 @@ app.get('/api/getDailyReport', async (req, res) => {
 	}
 })
 
-app.get('/api/getSettings', tokenVerification.forAdmins, async (req, res) => {
+app.get('/api/settings', tokenVerification.forAdmins, async (req, res) => {
 	try{
 		const dbResponse = await db.getSettings()
 		res.status(200).send(dbResponse)

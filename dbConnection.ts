@@ -163,8 +163,6 @@ export async function setSettings(){
 export async function getSettings(){
 	const res = await query(`
 		SELECT * from settings
-		WHERE 
-			label != 'startedPeriod' 
 	`)
 	return res
 }

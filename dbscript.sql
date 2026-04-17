@@ -343,9 +343,19 @@ LOCK TABLES `settings` WRITE;
 /*!40000 ALTER TABLE `settings` DISABLE KEYS */;
 INSERT INTO `settings` VALUES
 ('currencyRate',244),
-('datePrice',5),
-('historyPrice',5),
-('startedPeriod',0);
+('ciaConsulta',1),
+('cianConsulta',1),
+('ciaHistoria',1),
+('cianHistoria',1),
+('cirugia',1),
+('endodoncia',1),
+('ortodoncia',1),
+('protesisTotal',1),
+('protesisParcialFija',1),
+('protesisParcialRemovible',1),
+('emergenciaCia',1),
+('emergenciaCian',1),
+('peridoncia',0);
 /*!40000 ALTER TABLE `settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
