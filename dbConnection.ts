@@ -167,6 +167,13 @@ export async function getSettings(){
 	return res
 }
 
+export async function getPrices(){
+	const res = await query(`
+		SELECT * FROM prices	
+	`)
+	return res;
+}
+
 export async function getLogs(page: number) {
 	const res = await query(`
 		SELECT

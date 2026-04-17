@@ -342,7 +342,18 @@ CREATE TABLE `settings` (
 LOCK TABLES `settings` WRITE;
 /*!40000 ALTER TABLE `settings` DISABLE KEYS */;
 INSERT INTO `settings` VALUES
-('currencyRate',244),
+('currencyRate',244);
+
+/*!40000 ALTER TABLE `settings` ENABLE KEYS */;
+UNLOCK TABLES;
+
+CREATE TABLE `prices` (
+  `label` varchar(50) NOT NULL,
+  `value` int(11) NOT NULL,
+  PRIMARY KEY (`label`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+
+INSERT INTO`prices` VALUES
 ('ciaConsulta',1),
 ('cianConsulta',1),
 ('ciaHistoria',1),
@@ -355,9 +366,7 @@ INSERT INTO `settings` VALUES
 ('protesisParcialRemovible',1),
 ('emergenciaCia',1),
 ('emergenciaCian',1),
-('peridoncia',0);
-/*!40000 ALTER TABLE `settings` ENABLE KEYS */;
-UNLOCK TABLES;
+('peridoncia',1);
 
 --
 -- Table structure for table `users`

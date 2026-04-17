@@ -175,6 +175,16 @@ app.get('/api/settings', tokenVerification.forAdmins, async (req, res) => {
 	}
 })
 
+app.get('api/prices', tokenVerification.forAdmins, async (req, res) => {
+	try{
+		const dbResponse = await db.getPrices();
+		res.status(200).send(dbResponse)
+	}catch(err){
+		console.log(err)
+		res.status(500).send(err)
+	}
+})
+
 app.listen(port, "0.0.0.0", () => {
 	console.log(`Puerto: ${port}`)
 })
