@@ -5,6 +5,7 @@ import * as db from './dbConnection.ts'
 import * as tokenVerification from './tokenVerification.ts'
 import "jsr:@std/dotenv/load";
 import { BuildReport } from "./PdfModels/DailyReport.ts";
+import { INewPrices } from "./types/INewPrices.ts";
 
 const port = Deno.env.get("PORT")
 const secret = Deno.env.get("SECRET")
@@ -179,6 +180,17 @@ app.get('/api/prices', tokenVerification.forAdmins, async (req, res) => {
 	try{
 		const dbResponse = await db.getPrices();
 		res.status(200).send(dbResponse)
+	}catch(err){
+		console.log(err)
+		res.status(500).send(err)
+	}
+})
+
+app.post('/api/prices', tokenVerification.forAdmins, async(req, res) => {
+	try{
+		const newPrices:INewPrices = req.body
+		const _dbResponse = await db.savePriceChanges(newPrices)
+		res.status(200).send()
 	}catch(err){
 		console.log(err)
 		res.status(500).send(err)

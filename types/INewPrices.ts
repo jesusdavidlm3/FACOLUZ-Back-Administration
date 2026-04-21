@@ -1,0 +1,15 @@
+export interface INewPrices{
+    CIAConsulta: number,
+    CIAHistoria: number,
+    CIANConsulta: number,
+    CIANHistoria: number,
+    Cirugia: number,
+    Endodoncia: number,
+    Ortodoncia: number,
+    Peridoncia: number,
+    ProtesisTotal: number,
+    ProtesisParcialRemovible: number,
+    ProtesisParcialFija: number,
+    EmergenciaCIA: number,
+    EmergenciaCIAN: number,
+}

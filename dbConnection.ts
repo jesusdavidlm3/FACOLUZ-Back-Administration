@@ -1,6 +1,7 @@
 import mariadb from 'npm:mariadb'
 import * as t from './interfaces.ts'
 import "jsr:@std/dotenv/load";
+import { INewPrices } from "./types/INewPrices.ts";
 
 const db = mariadb.createPool({
 	host: Deno.env.get("BDD_HOST"),
@@ -172,6 +173,38 @@ export async function getPrices(){
 		SELECT * FROM prices	
 	`)
 	return res;
+}
+
+export async function savePriceChanges(newPrices: INewPrices){
+	const _res = await execute(`
+		UPDATE prices SET value = ? WHERE label = ciaConsulta
+		UPDATE prices SET value = ? WHERE label = cianConsulta
+		UPDATE prices SET value = ? WHERE label = ciaHistoria
+		UPDATE prices SET value = ? WHERE label = cianHistoria
+		UPDATE prices SET value = ? WHERE label = cirugia
+		UPDATE prices SET value = ? WHERE label = endodoncia
+		UPDATE prices SET value = ? WHERE label = ortodoncia
+		UPDATE prices SET value = ? WHERE label = protesisTotal
+		UPDATE prices SET value = ? WHERE label = protesisParcialFija
+		UPDATE prices SET value = ? WHERE label = protesisParcialRemovible
+		UPDATE prices SET value = ? WHERE label = emergenciaCia
+		UPDATE prices SET value = ? WHERE label = emergenciaCian
+		UPDATE prices SET value = ? WHERE label = peridoncia
+	`, [
+		newPrices.CIAConsulta,
+		newPrices.CIANConsulta,
+		newPrices.CIAHistoria,
+		newPrices.CIANHistoria,
+		newPrices.Cirugia,
+		newPrices.Endodoncia,
+		newPrices.Ortodoncia,
+		newPrices.ProtesisTotal,
+		newPrices.ProtesisParcialFija,
+		newPrices.ProtesisParcialRemovible,
+		newPrices.EmergenciaCIA,
+		newPrices.EmergenciaCIAN,
+		newPrices.Peridoncia
+	])
 }
 
 export async function getLogs(page: number) {
