@@ -176,35 +176,57 @@ export async function getPrices(){
 }
 
 export async function savePriceChanges(newPrices: INewPrices){
-	const _res = await execute(`
-		UPDATE prices SET value = ? WHERE label = ciaConsulta
-		UPDATE prices SET value = ? WHERE label = cianConsulta
-		UPDATE prices SET value = ? WHERE label = ciaHistoria
-		UPDATE prices SET value = ? WHERE label = cianHistoria
-		UPDATE prices SET value = ? WHERE label = cirugia
-		UPDATE prices SET value = ? WHERE label = endodoncia
-		UPDATE prices SET value = ? WHERE label = ortodoncia
-		UPDATE prices SET value = ? WHERE label = protesisTotal
-		UPDATE prices SET value = ? WHERE label = protesisParcialFija
-		UPDATE prices SET value = ? WHERE label = protesisParcialRemovible
-		UPDATE prices SET value = ? WHERE label = emergenciaCia
-		UPDATE prices SET value = ? WHERE label = emergenciaCian
-		UPDATE prices SET value = ? WHERE label = peridoncia
-	`, [
-		newPrices.CIAConsulta,
-		newPrices.CIANConsulta,
-		newPrices.CIAHistoria,
-		newPrices.CIANHistoria,
-		newPrices.Cirugia,
-		newPrices.Endodoncia,
-		newPrices.Ortodoncia,
-		newPrices.ProtesisTotal,
-		newPrices.ProtesisParcialFija,
-		newPrices.ProtesisParcialRemovible,
-		newPrices.EmergenciaCIA,
-		newPrices.EmergenciaCIAN,
-		newPrices.Peridoncia
-	])
+	const _res1 = await execute(`
+		UPDATE prices SET value = ? WHERE label = 'ciaConsulta';
+	`, [Number(newPrices.CIAConsulta)])
+
+	const _res2 = await execute(`
+		UPDATE prices SET value = ? WHERE label = 'cianConsulta';
+	`, [Number(newPrices.CIANConsulta)])
+
+	const _res3 = await execute(`
+		UPDATE prices SET value = ? WHERE label = 'ciaHistoria';
+	`, [Number(newPrices.CIAHistoria)])
+
+	const _res4 = await execute(`
+		UPDATE prices SET value = ? WHERE label = 'cianHistoria';
+	`, [Number(newPrices.CIANHistoria)])
+
+	const _res5 = await execute(`
+		UPDATE prices SET value = ? WHERE label = 'cirugia';
+	`, [Number(newPrices.Cirugia)])
+
+	const _res6 = await execute(`
+		UPDATE prices SET value = ? WHERE label = 'endodoncia';
+	`, [Number(newPrices.Endodoncia)])
+
+	const _res7 = await execute(`
+		UPDATE prices SET value = ? WHERE label = 'ortodoncia';
+	`, [Number(newPrices.Ortodoncia)])
+	
+	const _res8 = await execute(`
+		UPDATE prices SET value = ? WHERE label = 'protesisTotal';
+	`, [Number(newPrices.ProtesisTotal)])
+	
+	const _res9 = await execute(`
+		UPDATE prices SET value = ? WHERE label = 'protesisParcialFija';
+	`, [Number(newPrices.ProtesisParcialFija)])
+	
+	const _res10 = await execute(`
+		UPDATE prices SET value = ? WHERE label = 'protesisParcialRemovible';
+	`, [Number(newPrices.ProtesisParcialRemovible)])
+	
+	const _res11 = await execute(`
+		UPDATE prices SET value = ? WHERE label = 'emergenciaCia';
+	`, [Number(newPrices.EmergenciaCIA)])
+	
+	const _res12 = await execute(`
+		UPDATE prices SET value = ? WHERE label = 'emergenciaCian';
+	`, [Number(newPrices.EmergenciaCIAN)])
+	const _res13 = await execute(`
+		UPDATE prices SET value = ? WHERE label = 'peridoncia';
+	`, [Number(newPrices.Peridoncia)])
+	
 }
 
 export async function getLogs(page: number) {
