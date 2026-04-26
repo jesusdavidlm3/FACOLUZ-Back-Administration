@@ -2,6 +2,7 @@ import mariadb from 'npm:mariadb'
 import * as t from './interfaces.ts'
 import "jsr:@std/dotenv/load";
 import { INewPrices } from "./types/INewPrices.ts";
+import { IUser } from './types/IUser.ts';
 
 const db = mariadb.createPool({
 	host: Deno.env.get("BDD_HOST"),
@@ -253,4 +254,45 @@ export async function getDailyReportInfo(start: Date, end: Date){
 		WHERE date > ? AND date < ?
 	`, [start, end])
 	return res
+}
+
+export async function getAllUsers(){
+	const res = await query(`
+		SELECT 
+			id,
+			name,
+			lastname,
+			type,
+			identificationType,
+			active
+		FROM users	
+	`)
+
+	return res;
+}
+
+export async function createNewUser(user: IUser){
+	const _res = await execute(`
+		INSERT INTO users(id, name, lastname, passwordSHA256, type, identificationType, active)
+		VALUES(?, ?, ?, ?, ?, ?, ?);
+	`, [user.id, user.name, user.lastname, user.passwordSHA256, user.type, user.identificationType, user.active])
+}
+
+export async function updateUser(user: IUser){
+	const _res = await execute(`
+		UPDATE users 
+		SET
+			name = ?,
+			lastname = ?,
+			type = ?,
+			identificationType = ?,
+			active = ?
+		WHERE id = ?;
+	`, [user.name, user.lastname, user.type, user.identificationType, user.active, user.id])
+}
+
+export async function updatePassword(userId: string, newPassword: string){
+	const _res = await execute(`
+		UPDATE users SET passwordSHA256 = ? WHERE id = ?	
+	`, [newPassword, userId])
 }

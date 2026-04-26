@@ -197,6 +197,38 @@ app.post('/api/prices', tokenVerification.forAdmins, async(req, res) => {
 	}
 })
 
+app.get('/api/user', tokenVerification.forAdmins, async(req, res) => {
+	try{
+		const dbResponse = await db.getAllUsers()
+		res.status(200).send(dbResponse)
+	}catch(err){
+		console.log(err)
+		res.status(500).send()
+	}
+})
+
+app.post('/api/user', tokenVerification.forAdmins, async (req, res) => {
+	try{
+		const user = req.body;
+		const _dbResponse = await db.createNewUser(user)
+		res.status(201).send()
+	}catch(err){
+		console.log(err)
+		res.status(500).send(err)
+	}
+})
+
+app.patch('/api/user/:userId', tokenVerification.forAdmins, async (req, res) => {
+	try{
+		const user = req.body;
+		const _dbResponse = await db.updateUser(user)
+		res.status(201).send()
+	}catch(err){
+		console.log(err)
+		res.status(500).send(err)
+	}
+})
+
 app.listen(port, "0.0.0.0", () => {
 	console.log(`Puerto: ${port}`)
 })
