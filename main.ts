@@ -26,8 +26,6 @@ app.post('/api/login', async (req, res) => {
 			res.status(401).send('Contraseña Incorrecta')
 		}else if(dbResponse[0].active == false){
 			res.status(404).send('Este usuario se encuentra inactivo')
-		}else if(dbResponse[0].type != 5 && dbResponse[0].type != 6){
-			res.status(401).send('Usted no es personal administrativo')
 		}else{
 			const token = jwt.sign({
 				id: dbResponse[0].id,
@@ -45,7 +43,7 @@ app.post('/api/login', async (req, res) => {
 })
 
 //Obtener el numero de Factura a emitir
-app.get('/api/getIdInvoice', tokenVerification.forAdmins, async (req, res) => {
+app.get('/api/getIdInvoice', tokenVerification.personalAdmin, async (req, res) => {
 	try{
 		const dbResponse = await db.getIdInvoice()
 		res.status(200).send(dbResponse)
@@ -55,7 +53,7 @@ app.get('/api/getIdInvoice', tokenVerification.forAdmins, async (req, res) => {
 	}
 })
 
-app.post('/api/issueInvoice', tokenVerification.forAdmins, async (req, res) => {
+app.post('/api/issueInvoice', tokenVerification.personalAdmin, async (req, res) => {
 	const token = req.headers.authorization.split(" ")[1]
 	const payload = jwt.verify(token, secret)
 	try {
@@ -69,7 +67,7 @@ app.post('/api/issueInvoice', tokenVerification.forAdmins, async (req, res) => {
 })
 
 //Modificar para verificar si un pagador ya existe
-app.get('/api/getSearchedPatient/:idParam', tokenVerification.forSysAdmins, async (req, res) => {
+app.get('/api/getSearchedPatient/:idParam', tokenVerification.personalAdmin, async (req, res) => {
 	const idParam = req.params.idParam
 	try {
 		const dbResponse = await db.getSearchedPatient(idParam)
@@ -80,7 +78,7 @@ app.get('/api/getSearchedPatient/:idParam', tokenVerification.forSysAdmins, asyn
 	}
 })
 //Obtener facturas por verificar
-app.get('/api/getinvoicesVerification/:page', tokenVerification.forAdmins, async (req, res) => {
+app.get('/api/getinvoicesVerification/:page', tokenVerification.personalAdmin, async (req, res) => {
 	const page = Number(req.params.page)
 	try{
 		const dbResponse = await db.getinvoicesVerification(page)
@@ -91,7 +89,7 @@ app.get('/api/getinvoicesVerification/:page', tokenVerification.forAdmins, async
 	}
 })
 //Obtener facturas por verificar y por ID de paciente
-app.get('/api/getInvoicesVerificationById/:patientId/:page', tokenVerification.forAdmins, async (req, res) => {
+app.get('/api/getInvoicesVerificationById/:patientId/:page', tokenVerification.personalAdmin, async (req, res) => {
 	const patientId = req.params.patientId
 	const page = Number(req.params.page)
 	try{
@@ -103,7 +101,7 @@ app.get('/api/getInvoicesVerificationById/:patientId/:page', tokenVerification.f
 	}
 })
 //Verificar factura
-app.post('/api/verifyInvoice', tokenVerification.forAdmins, async (req, res) => {
+app.post('/api/verifyInvoice', tokenVerification.personalAdmin, async (req, res) => {
 	const {idParam, status} = req.body
 	try{
 		const dbResponse = await db.verifyInvoice(idParam, status)
@@ -115,7 +113,7 @@ app.post('/api/verifyInvoice', tokenVerification.forAdmins, async (req, res) => 
 })
 
 //Modificar para obtener citas por cedula de pagador
-app.get('/api/getInvoices/:patientId/:page', tokenVerification.forAdmins, async (req, res) => {
+app.get('/api/getInvoices/:patientId/:page', tokenVerification.personalAdmin, async (req, res) => {
 	const patientId = req.params.patientId
 	const page = Number(req.params.page)
 	try{
@@ -127,7 +125,7 @@ app.get('/api/getInvoices/:patientId/:page', tokenVerification.forAdmins, async 
 	}
 })
 
-app.get('/api/getInvoices/:page', tokenVerification.forAdmins, async (req, res) => {
+app.get('/api/getInvoices/:page', tokenVerification.personalAdmin, async (req, res) => {
 	const page = Number(req.params.page)
 	try{
 		const dbResponse = await db.getAllinvoices(page)
@@ -166,7 +164,7 @@ app.get('/api/getDailyReport', async (req, res) => {
 	}
 })
 
-app.get('/api/settings', tokenVerification.forAdmins, async (req, res) => {
+app.get('/api/settings', tokenVerification.personalAdmin, async (req, res) => {
 	try{
 		const dbResponse = await db.getSettings()
 		res.status(200).send(dbResponse)
@@ -176,7 +174,7 @@ app.get('/api/settings', tokenVerification.forAdmins, async (req, res) => {
 	}
 })
 
-app.get('/api/prices', tokenVerification.forAdmins, async (req, res) => {
+app.get('/api/prices', tokenVerification.personalAdmin, async (req, res) => {
 	try{
 		const dbResponse = await db.getPrices();
 		res.status(200).send(dbResponse)
@@ -186,7 +184,7 @@ app.get('/api/prices', tokenVerification.forAdmins, async (req, res) => {
 	}
 })
 
-app.post('/api/prices', tokenVerification.forAdmins, async(req, res) => {
+app.post('/api/prices', tokenVerification.adminGeneral, async(req, res) => {
 	try{
 		const newPrices:INewPrices = req.body
 		const _dbResponse = await db.savePriceChanges(newPrices)
@@ -197,7 +195,7 @@ app.post('/api/prices', tokenVerification.forAdmins, async(req, res) => {
 	}
 })
 
-app.get('/api/user', tokenVerification.forAdmins, async(req, res) => {
+app.get('/api/user', tokenVerification.adminGeneral, async(req, res) => {
 	try{
 		const dbResponse = await db.getAllUsers()
 		res.status(200).send(dbResponse)
@@ -207,7 +205,7 @@ app.get('/api/user', tokenVerification.forAdmins, async(req, res) => {
 	}
 })
 
-app.post('/api/user', tokenVerification.forAdmins, async (req, res) => {
+app.post('/api/user', tokenVerification.adminGeneral, async (req, res) => {
 	try{
 		const user = req.body;
 		const _dbResponse = await db.createNewUser(user)
@@ -218,7 +216,7 @@ app.post('/api/user', tokenVerification.forAdmins, async (req, res) => {
 	}
 })
 
-app.patch('/api/user/:userId', tokenVerification.forAdmins, async (req, res) => {
+app.patch('/api/user/:userId', tokenVerification.adminGeneral, async (req, res) => {
 	try{
 		const user = req.body;
 		const _dbResponse = await db.updateUser(user)

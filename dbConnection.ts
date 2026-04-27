@@ -263,7 +263,6 @@ export async function getAllUsers(){
 			name,
 			lastname,
 			type,
-			identificationType,
 			active
 		FROM users	
 	`)
@@ -273,9 +272,9 @@ export async function getAllUsers(){
 
 export async function createNewUser(user: IUser){
 	const _res = await execute(`
-		INSERT INTO users(id, name, lastname, passwordSHA256, type, identificationType, active)
+		INSERT INTO users(id, name, lastname, passwordSHA256, type, active)
 		VALUES(?, ?, ?, ?, ?, ?, ?);
-	`, [user.id, user.name, user.lastname, user.passwordSHA256, user.type, user.identificationType, user.active])
+	`, [user.id, user.name, user.lastname, user.passwordSHA256, user.type, user.active])
 }
 
 export async function updateUser(user: IUser){

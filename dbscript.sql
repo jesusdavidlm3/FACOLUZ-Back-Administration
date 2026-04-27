@@ -381,7 +381,6 @@ CREATE TABLE `users` (
   `lastname` varchar(20) NOT NULL,
   `passwordSHA256` varchar(64) NOT NULL,
   `type` int(11) NOT NULL,
-  `identificationType` int(10) NOT NULL,
   `active` tinyint(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
@@ -393,7 +392,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 INSERT INTO `users` VALUES
-(1,'admin','admin','8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918',5,0,1);
+(1,'admin','admin','66908395b9edc2fbbedd85dbda476785736a14ac7313f06a362f779b643734e5',0,1);
 UNLOCK TABLES;
 
 --
