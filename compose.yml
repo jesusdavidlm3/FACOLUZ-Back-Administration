@@ -1,6 +1,5 @@
 services:
   admin-back:
-    image: admin-back 
     build: 
       dockerfile: Dockerfile
       context: .
@@ -15,18 +14,17 @@ services:
     environment:
       PORT: 3005
       # Escribir secreto para encriptar (cadena de caracteres alfanumericos de 256 caracteres)
-      SECRET: 
+      SECRET: iYatyABDt56E2wArQuRnZh0PNe3zUz50rKuiazZgZTTZEwwDYbxF6htmB6fL6T3AFUrK5F3fMcheKb5x4ddLnmG3r8TvxZWvmcPNA9SpBGYM2Hd2H2jQkbQaUF0YLN1Q2NAj8THEMvp37fi4azMnXnw3TbwAkFCDdbyWg0aF8wk4t3Q32EzAg4Gy02wFZYU3vu5miD7ukN7VZEk3JVAvCb1F8Ub91AhRqS7dfCxr0GSH7jTEdan35Zhke2vbm08D
       BDD_HOST: 172.16.0.3
       BDD_USER: root
       # Escribir contraseña de la base de datos
-      BDD_PASSWORD: 
+      BDD_PASSWORD: 2402
       BDD_DATABASE: faco_luz
       BDD_PORT: 3306
       BDD_TIMEOUT: 10000
       BDD_CONECTION_LIMITS: 25
 
   admin-db:
-    image: admin-db
     build:
       context: .
       dockerfile: Dockerfile-db
@@ -38,7 +36,7 @@ services:
     restart: always
     environment:
       # A condinuacion escribir la contraseña de la base de datos
-      MARIADB_ROOT_PASSWORD: 
+      MARIADB_ROOT_PASSWORD: 2402
     volumes: 
       - C:/faco-admin-db:/var/lib/mysql
 
