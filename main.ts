@@ -216,7 +216,7 @@ app.post('/api/user', tokenVerification.adminGeneral, async (req, res) => {
 	}
 })
 
-app.patch('/api/user/:userId', tokenVerification.adminGeneral, async (req, res) => {
+app.patch('/api/user/', tokenVerification.adminGeneral, async (req, res) => {
 	try{
 		const user = req.body;
 		const _dbResponse = await db.updateUser(user)

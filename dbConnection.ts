@@ -284,10 +284,9 @@ export async function updateUser(user: IUser){
 			name = ?,
 			lastname = ?,
 			type = ?,
-			identificationType = ?,
 			active = ?
 		WHERE id = ?;
-	`, [user.name, user.lastname, user.type, user.identificationType, user.active, user.id])
+	`, [user.name, user.lastname, user.type, user.active, user.id])
 }
 
 export async function updatePassword(userId: string, newPassword: string){
