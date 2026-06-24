@@ -294,3 +294,43 @@ export async function updatePassword(userId: string, newPassword: string){
 		UPDATE users SET passwordSHA256 = ? WHERE id = ?	
 	`, [newPassword, userId])
 }
+
+export async function cancelInvoice(invoiceId: string){
+	const originalInvoice = await query(`
+		SELECT * FROM invoices WHERE id = ?
+	`, [invoiceId])
+
+	// if (originalcurrency !== 2){
+	// 	const res = await execute(`
+	// 		INSERT INTO invoices(billableitem, currency, amount, reference, changeRate, patientId, patientName, patientPhone,status)
+	// 		VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)	
+	// 	`, [billableItem, currency, amount, reference, changeRate, patientId, patientName, patientPhone, 'Recibida'])
+	// 	return res
+	// }else{
+	// 	const res = await execute(`
+	// 		INSERT INTO invoices(billableitem, currency, amount, reference, changeRate, patientId, patientName, patientPhone)
+	// 		VALUES(?, ?, ?, ?, ?, ?, ?, ?)	
+	// 	`, [billableItem, currency, amount, reference, changeRate, patientId, patientName, patientPhone ])
+	// 	return res
+	// }
+	
+	const res = await execute(`
+		START TRANSACTION
+		
+		UPDATE invoices SET status = 'Anulada' WHERE id = ?
+
+		INSERT INTO invoices(billableitem, currency, amount, reference, changeRate, patientId, patientName, patientPhone, status)
+			VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
+	`, [
+		invoiceId,
+		originalInvoice.billableItem,
+		originalInvoice.currency,
+		originalInvoice.amount,
+		originalInvoice.reference,
+		originalInvoice.changeRate, 
+		originalInvoice.patientId, 
+		originalInvoice.patientName, 
+		originalInvoice.patientPhone, 
+		originalInvoice.currency == 2 ? "Recibida" : null
+	])
+}
