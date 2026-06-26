@@ -41,6 +41,27 @@ async function execute(query: string, params?: object) {
 		connection?.release()
 	}
 }
+
+async function transaction(queries: string[], params?: object[]){
+	let connection
+	try{
+		connection = await db.getConnection()
+		await connection.beginTransaction()
+
+		for(let i = 0; i <= queries.length - 1; i++){
+			await connection.execute(queries[i], params[i] ?? [])
+		}
+
+		await connection.commit()
+	}catch(err){
+		console.log(err)
+		await connection?.rollback()
+		throw err
+	}finally{
+		await connection?.release()
+	}
+}
+
 //Inicio de sesion
 export async function login(data: t.loginData){
 	const id = data.id
@@ -314,23 +335,48 @@ export async function cancelInvoice(invoiceId: string){
 	// 	return res
 	// }
 	
-	const res = await execute(`
-		START TRANSACTION
-		
-		UPDATE invoices SET status = 'Anulada' WHERE id = ?
-
-		INSERT INTO invoices(billableitem, currency, amount, reference, changeRate, patientId, patientName, patientPhone, status)
+	const transactionQueries = [
+		"UPDATE invoices SET status = 'Anulada' WHERE id = ?",
+		`
+			INSERT INTO invoices(billableitem, currency, amount, reference, changeRate, patientId, patientName, patientPhone, status)
 			VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
-	`, [
-		invoiceId,
-		originalInvoice.billableItem,
-		originalInvoice.currency,
-		originalInvoice.amount,
-		originalInvoice.reference,
-		originalInvoice.changeRate, 
-		originalInvoice.patientId, 
-		originalInvoice.patientName, 
-		originalInvoice.patientPhone, 
-		originalInvoice.currency == 2 ? "Recibida" : null
-	])
+		`
+	]
+
+	const params = [
+		[invoiceId],
+		[
+			originalInvoice[0].billableitem,
+			originalInvoice[0].currency,
+			originalInvoice[0].amount,
+			originalInvoice[0].reference,
+			originalInvoice[0].changeRate, 
+			originalInvoice[0].patientId, 
+			originalInvoice[0].patientName, 
+			originalInvoice[0].patientPhone, 
+			"Recibida"
+		]
+	]
+
+	const res = await transaction(transactionQueries, params)
+
+	// const res = await execute(`
+	// 	START TRANSACTION
+		
+	// 	UPDATE invoices SET status = 'Anulada' WHERE id = ?
+
+	// 	INSERT INTO invoices(billableitem, currency, amount, reference, changeRate, patientId, patientName, patientPhone, status)
+	// 		VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
+	// `, [
+	// 	invoiceId,
+	// 	originalInvoice.billableItem,
+	// 	originalInvoice.currency,
+	// 	originalInvoice.amount,
+	// 	originalInvoice.reference,
+	// 	originalInvoice.changeRate, 
+	// 	originalInvoice.patientId, 
+	// 	originalInvoice.patientName, 
+	// 	originalInvoice.patientPhone, 
+	// 	originalInvoice.currency == 2 ? "Recibida" : null
+	// ])
 }
