@@ -231,7 +231,7 @@ app.delete('/api/invoice/:invoiceId', tokenVerification.adminGeneral, async(req,
 	try{
 		const invoiceId = req.params.invoiceId;
 		const _dbResponse = await db.cancelInvoice(invoiceId);
-		res.status(200).send()
+		res.status(204).send()
 	}catch(err){
 		console.log(err)
 		res.status(500).send(err)

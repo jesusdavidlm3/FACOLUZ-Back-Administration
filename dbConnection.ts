@@ -320,20 +320,6 @@ export async function cancelInvoice(invoiceId: string){
 	const originalInvoice = await query(`
 		SELECT * FROM invoices WHERE id = ?
 	`, [invoiceId])
-
-	// if (originalcurrency !== 2){
-	// 	const res = await execute(`
-	// 		INSERT INTO invoices(billableitem, currency, amount, reference, changeRate, patientId, patientName, patientPhone,status)
-	// 		VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)	
-	// 	`, [billableItem, currency, amount, reference, changeRate, patientId, patientName, patientPhone, 'Recibida'])
-	// 	return res
-	// }else{
-	// 	const res = await execute(`
-	// 		INSERT INTO invoices(billableitem, currency, amount, reference, changeRate, patientId, patientName, patientPhone)
-	// 		VALUES(?, ?, ?, ?, ?, ?, ?, ?)	
-	// 	`, [billableItem, currency, amount, reference, changeRate, patientId, patientName, patientPhone ])
-	// 	return res
-	// }
 	
 	const transactionQueries = [
 		"UPDATE invoices SET status = 'Anulada' WHERE id = ?",
@@ -348,35 +334,15 @@ export async function cancelInvoice(invoiceId: string){
 		[
 			originalInvoice[0].billableitem,
 			originalInvoice[0].currency,
-			originalInvoice[0].amount,
+			Number(`-${originalInvoice[0].amount}`),
 			originalInvoice[0].reference,
 			originalInvoice[0].changeRate, 
 			originalInvoice[0].patientId, 
 			originalInvoice[0].patientName, 
 			originalInvoice[0].patientPhone, 
-			"Recibida"
+			"Anulacion"
 		]
 	]
 
-	const res = await transaction(transactionQueries, params)
-
-	// const res = await execute(`
-	// 	START TRANSACTION
-		
-	// 	UPDATE invoices SET status = 'Anulada' WHERE id = ?
-
-	// 	INSERT INTO invoices(billableitem, currency, amount, reference, changeRate, patientId, patientName, patientPhone, status)
-	// 		VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)
-	// `, [
-	// 	invoiceId,
-	// 	originalInvoice.billableItem,
-	// 	originalInvoice.currency,
-	// 	originalInvoice.amount,
-	// 	originalInvoice.reference,
-	// 	originalInvoice.changeRate, 
-	// 	originalInvoice.patientId, 
-	// 	originalInvoice.patientName, 
-	// 	originalInvoice.patientPhone, 
-	// 	originalInvoice.currency == 2 ? "Recibida" : null
-	// ])
+	const _res = await transaction(transactionQueries, params)
 }
