@@ -9,20 +9,20 @@ services:
       admin-net: 
         ipv4_address: 172.16.0.2
     ports: 
-      - 3005:3005
+      - ${PORT}:${PORT}
     restart: always
     environment:
-      PORT: 3005
+      PORT: ${PORT}
       # Escribir secreto para encriptar (cadena de caracteres alfanumericos de 256 caracteres)
-      SECRET: iYatyABDt56E2wArQuRnZh0PNe3zUz50rKuiazZgZTTZEwwDYbxF6htmB6fL6T3AFUrK5F3fMcheKb5x4ddLnmG3r8TvxZWvmcPNA9SpBGYM2Hd2H2jQkbQaUF0YLN1Q2NAj8THEMvp37fi4azMnXnw3TbwAkFCDdbyWg0aF8wk4t3Q32EzAg4Gy02wFZYU3vu5miD7ukN7VZEk3JVAvCb1F8Ub91AhRqS7dfCxr0GSH7jTEdan35Zhke2vbm08D
+      SECRET: ${SECRET}
       BDD_HOST: 172.16.0.3
       BDD_USER: root
       # Escribir contraseña de la base de datos
-      BDD_PASSWORD: 2402
+      BDD_PASSWORD: ${DB_PASSWORD}
       BDD_DATABASE: faco_luz
-      BDD_PORT: 3306
-      BDD_TIMEOUT: 10000
-      BDD_CONECTION_LIMITS: 25
+      BDD_PORT: ${DB_PORT}
+      BDD_TIMEOUT: ${DB_TIMEOUT}
+      BDD_CONECTION_LIMITS: ${DB_CONNECTION_LIMITS}
 
   admin-db:
     build:
@@ -36,9 +36,9 @@ services:
     restart: always
     environment:
       # A condinuacion escribir la contraseña de la base de datos
-      MARIADB_ROOT_PASSWORD: 2402
+      MARIADB_ROOT_PASSWORD: ${DB_PASSWORD}
     volumes: 
-      - C:/faco-admin-db:/var/lib/mysql
+      - ${API_VOLUME}:/var/lib/mysql
 
 networks:
   admin-net:

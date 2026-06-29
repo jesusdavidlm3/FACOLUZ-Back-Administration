@@ -1,9 +1,11 @@
 import PDFDocument from "pdfkit"
 import { Iinvoice } from '../types/invoice.ts' 
 
-export function BuildReport(dataCallback, endCallback, invoiceList: Iinvoice[]){
+export function BuildReport(dataCallback, endCallback, allOperations: Iinvoice[]){
     const doc = new PDFDocument()
     const date = new Date()
+
+    const invoiceList = allOperations.filter(f => f.status !== "Anulacion")
 
     //Cantidades
     const facturasExoneradas = FacturasExoneradas(invoiceList)
@@ -12,9 +14,9 @@ export function BuildReport(dataCallback, endCallback, invoiceList: Iinvoice[]){
     const facturasBsEfectivo = FacturasBsEfectivo(invoiceList)
 
     //Montos
-    const totalDolares = calcularIngreso(facturasDolares)
-    const totalBsEfectivo = calcularIngreso(facturasBsEfectivo)
-    const totalBsTranf = calcularIngreso(facturasBsTranf)
+    const totalDolares = calcularIngreso(allOperations.filter(f => f.currency === "Dolares en efectivo"))
+    const totalBsEfectivo = calcularIngreso(allOperations.filter(f => f.currency === "Bolivares en efectivo"))
+    const totalBsTranf = calcularIngreso(facturasBsTranf.filter(f => f.currency === "Bolivares en transferencia"))
 
     //Consultas
     const facturasCirugia = FacturasCirugia(invoiceList)
@@ -48,8 +50,9 @@ export function BuildReport(dataCallback, endCallback, invoiceList: Iinvoice[]){
     doc.text(" ", 75, 150)
     doc.text(`Total de facturas expedidas: ${invoiceList.length} facturas`)
     doc.text(`Facturas exoneradas: ${facturasExoneradas.length} facturas`)
-    doc.text(`Facturas canceladas en dolares: ${facturasDolares.length} facturas`)
-    doc.text(`Facturas canceladas en bolivares: ${facturasBsEfectivo.length + facturasBsTranf.length} facturas`)
+    doc.text(`Facturas anuladas: ${invoiceList.filter(f => f.status === "Anulada").length} facturas`)
+    doc.text(`Facturas canceladas en dolares: ${facturasDolares.filter(f => f.status !== "Anulada").length} facturas`)
+    doc.text(`Facturas canceladas en bolivares: ${facturasBsEfectivo.filter(f => f.status !== "Anulada").length + facturasBsTranf.filter(f => f.status !== "Anulada").length} facturas`)
 
     doc.text(" ")
 
